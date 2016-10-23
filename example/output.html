@@ -1,0 +1,12 @@
+<h1>Test</h1>
+<div><pre><code><span style="color:#60a0b0;font-style:italic;">-- Automatic derivation of &quot;any class&quot; requires this language pragma:</span>
+<span style="color:#007020;">{-# LANGUAGE DeriveAnyClass #-}</span>
+<span style="color:#60a0b0;font-style:italic;">-- Automatic derivation of Generic requires this language pragma:</span>
+<span style="color:#007020;">{-# LANGUAGE DeriveGeneric #-}</span>
+
+<span style="color:#007020;font-weight:bold;">newtype</span> <span style="color:#902000;">URL</span> <span style="color:#06287e;">=</span> <span style="color:#902000;">URL</span> <span style="color:#902000;">String</span>
+  <span style="color:#007020;font-weight:bold;">deriving</span> (<span style="color:#902000;">Generic</span>, <span style="color:#902000;">Show</span>, <span style="color:#902000;">FromJSON</span>)
+
+<span style="color:#007020;font-weight:bold;">data</span> <span style="color:#902000;">Config</span> <span style="color:#06287e;">=</span> <span style="color:#902000;">Config</span>
+  {<span style="color:#007020;"> targets ::</span> [<span style="color:#902000;">URL</span>]
+  } <span style="color:#007020;font-weight:bold;">deriving</span> (<span style="color:#902000;">Generic</span>, <span style="color:#902000;">Show</span>, <span style="color:#902000;">FromJSON</span>)</code></pre></div>
