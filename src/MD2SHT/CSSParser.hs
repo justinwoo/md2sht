@@ -27,44 +27,36 @@ skipSpace' =
   <|> (takeWhile1 isSpace >> skipSpace')
   <|> return ()
 
+lexeme :: Parser a -> Parser a
+lexeme p = p <* skipSpace'
+
 parseProperty :: Parser Property
-parseProperty = do
-  p <- takeWhile (\x -> x /= ':' && x /= ' ')
-  skipSpace'
-  return $ Property (strip p)
+parseProperty = lexeme $
+  Property . strip <$> takeWhile (\x -> x /= ':' && x /= ' ')
 
 parseValue :: Parser Value
-parseValue = do
-  v <- takeWhile (\x -> x /= ';' && x /= '}')
-  skipSpace'
-  return $ Value (strip v)
+parseValue = lexeme $
+  Value . strip <$> takeWhile (\x -> x /= ';' && x /= '}')
 
 parseLine :: Parser Line
-parseLine = do
+parseLine = lexeme $ do
   prop <- parseProperty
-  skipSpace'
   void $ char ':'
   val <- parseValue
-  skipSpace'
   void (char ';') <|> return ()
-  skipSpace'
   return $ Line prop val
 
 parseSelector :: Parser Selector
-parseSelector = do
-  sel <- takeWhile (/= '{')
-  skipSpace'
-  return $ Selector (strip sel)
+parseSelector = lexeme $
+  Selector . strip <$> takeWhile (/= '{')
 
 parseRule :: Parser Rule
 parseRule = do
   skipSpace'
   sel <- parseSelector
-  void $ char '{'
-  skipSpace'
+  void $ lexeme (char '{')
   ls <- many' parseLine
-  void $ char '}'
-  skipSpace'
+  void $ lexeme (char '}')
   return $ Rule sel ls
 
 parseRules :: Parser [Rule]
