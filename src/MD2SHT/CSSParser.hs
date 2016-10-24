@@ -20,12 +20,11 @@ skipComments =
     closeComment =
       skipWhile (/= '*') >> string "*/" >> return ()
       <|> closeComment
-      <|> fail "Didn't match */ to close comment"
 
 skipSpace' :: Parser ()
 skipSpace' =
   (skipComments >> skipSpace')
-  <|> (skip isSpace >> skipSpace >> skipSpace')
+  <|> (takeWhile1 isSpace >> skipSpace')
   <|> return ()
 
 parseProperty :: Parser Property
