@@ -21,6 +21,9 @@ testRule = ".hll { background-color: #ffffcc }"
 testRule2 :: Text
 testRule2 = ".c { color: #408080; font-style: italic }"
 
+testRule3 :: Text
+testRule3 = ".c {  } /* sdfsdf * * sd */ /* sdfsdf * * sd */"
+
 testLine :: Text
 testLine = "background-color: #ffffcc"
 
@@ -55,6 +58,9 @@ main = hspec $ do
         , Rule (Selector ".err")
             [ Line (Property "border") (Value "1px solid #FF0000") ]
         ]
+    it "parses a rule with silly comments" $
+      testParse' parseRule testRule3 $
+        Rule (Selector ".c") []
   describe "extractStyles" $
     case parseOnly parseRules testRules of
       Left msg -> error msg

@@ -9,60 +9,63 @@ import Control.Monad (void)
 import Data.Text hiding (takeWhile)
 import Data.Attoparsec.Combinator
 import Data.Attoparsec.Text
+import Data.Char
 
 import MD2SHT.Types
 
 skipComments :: Parser ()
-skipComments = do
-  void (string "/*") <|> return ()
-  skipWhile $ (/=) '*'
-  void (string "*/")
-  return ()
+skipComments =
+  string "/*" >> closeComment
+  where
+    closeComment =
+      skipWhile (/= '*') >> string "*/" >> return ()
+      <|> closeComment
+      <|> fail "Didn't match */ to close comment"
 
 skipSpace' :: Parser ()
-skipSpace' = do
-  skipSpace
-  skipComments <|> return ()
+skipSpace' =
+  (skipComments >> skipSpace')
+  <|> (skip isSpace >> skipSpace >> skipSpace')
+  <|> return ()
 
 parseProperty :: Parser Property
 parseProperty = do
-  skipSpace'
   p <- takeWhile (\x -> x /= ':' && x /= ' ')
+  skipSpace'
   return $ Property (strip p)
 
 parseValue :: Parser Value
 parseValue = do
-  skipSpace'
   v <- takeWhile (\x -> x /= ';' && x /= '}')
+  skipSpace'
   return $ Value (strip v)
 
 parseLine :: Parser Line
 parseLine = do
-  skipSpace'
   prop <- parseProperty
   skipSpace'
   void $ char ':'
   val <- parseValue
   skipSpace'
   void (char ';') <|> return ()
+  skipSpace'
   return $ Line prop val
 
 parseSelector :: Parser Selector
 parseSelector = do
+  sel <- takeWhile (/= '{')
   skipSpace'
-  sel <- takeWhile $ (/=) '{'
   return $ Selector (strip sel)
 
 parseRule :: Parser Rule
 parseRule = do
   skipSpace'
   sel <- parseSelector
-  skipSpace'
   void $ char '{'
   skipSpace'
   ls <- many' parseLine
-  skipSpace'
   void $ char '}'
+  skipSpace'
   return $ Rule sel ls
 
 parseRules :: Parser [Rule]
