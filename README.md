@@ -6,6 +6,8 @@ useful for converting markdown into HTML with styled code blocks for whichever c
 
 ## Usage
 
+make sure you have Stack installed, e.g. `brew install stack` on Mac
+
 Requires a `default.css` file with Pandoc CSS styles defined. You can use the one in the example directory if you'd like.
 
 ```bash
