@@ -10,3 +10,6 @@
 <span style="color:#007020;font-weight:bold;">data</span> <span style="color:#902000;">Config</span> <span style="color:#06287e;">=</span> <span style="color:#902000;">Config</span>
   {<span style="color:#007020;"> targets ::</span> [<span style="color:#902000;">URL</span>]
   } <span style="color:#007020;font-weight:bold;">deriving</span> (<span style="color:#902000;">Generic</span>, <span style="color:#902000;">Show</span>, <span style="color:#902000;">FromJSON</span>)</code></pre></div>
+<div><pre><code><span style="color:#007020;font-weight:bold;">function</span> <span style="color:#7d9029;">a</span>(b) <span style="color:#666666;">{</span>
+  <span style="color:#007020;font-weight:bold;">return</span> <span style="color:#19177c;">Promise</span>.<span style="color:#7d9029;">resolve</span>(<span style="color:#19177c;">b</span>.<span style="color:#7d9029;">x</span> <span style="color:#666666;">+</span> <span style="color:#40a070;">123</span> <span style="color:#666666;">+</span> <span style="color:#19177c;">window</span>.<span style="color:#7d9029;">x</span>)<span style="color:#666666;">;</span>
+<span style="color:#666666;">}</span></code></pre></div>
