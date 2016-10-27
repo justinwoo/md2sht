@@ -2,9 +2,10 @@
 
 module MD2SHT where
 
-import Data.Text hiding (concat, words, intercalate)
+import Data.Text (pack, unpack, isInfixOf)
 import MD2SHT.Types
 import Text.HTML.TagSoup
+
 
 extractStyles :: [Rule] -> [String] -> String
 extractStyles rules classNames =
@@ -26,7 +27,9 @@ replaceClassnames rules html =
     parseTags html
   where
     extractClassNames = words . fromAttrib "class"
-    replaceClass tag@(TagOpen name _) = do
+    replaceClass tag@(TagOpen name attrs) = do
       let style = extractStyles rules $ extractClassNames tag
-      TagOpen name [("style", style) | style /= ""]
+      -- throw away class
+      let attrs' = filter ((/= "class") . fst) attrs
+      TagOpen name $ [("style", style) | style /= ""] ++ attrs'
     replaceClass tag = tag
