@@ -1,4 +1,6 @@
-# Test
+ Test
+
+[Haskell](http://haskell.org/) as awesome
 
 ```haskell
 -- Automatic derivation of "any class" requires this language pragma:
@@ -18,4 +20,14 @@ data Config = Config
 function a(b) {
   return Promise.resolve(b.x + 123 + window.x);
 }
+```
+
+Unicode: `id : ∀ a. a → a`
+And in the codeblock:
+
+```agda
+data _≅′_ {k : Set} (a : k) {k′ : Set} (b : k′) : Set₁ where
+    subst' : (keq : (kc : Set → Set) → kc k → kc k′)
+           → (c : k′ → Set) → (c (keq (λ t → t) a) → c b)
+           → a ≅′ b
 ```

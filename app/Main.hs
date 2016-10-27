@@ -30,21 +30,31 @@ newtype Html = Html String
 
 md2html :: Markdown -> Either PandocError Html
 md2html (Markdown md) =
-  Html . writeHtmlString (PO.def {writerHighlight = True, writerHtml5 = True}) <$> readMarkdown PO.def md
+  Html . writeHtmlString writeOpts <$> readMarkdown readOpts md
+  where
+  writeOpts = PO.def
+    { writerHighlight = True
+    , writerHtml5 = True
+    }
+  readOpts = PO.def
+    { readerExtensions = githubMarkdownExtensions
+    }
+
 
 main :: IO ()
 main = do
   opts <- getRecord "md2sht -- convert markdown to inline-styled html"
+  -- normalize opts
   let stylesheet' = fromMaybe "default.css" (unHelpful $ stylesheet opts)
-  html <- md2html . Markdown <$> readFile (unHelpful $ input opts)
-  css <- parseOnly parseRules . pack <$> readFile stylesheet'
-  case (html, css) of
-    (Left e, _) -> error (show e)
-    (_, Left e) -> error e
-    (Right (Html html'), Right rules) -> do
-      let result = replaceClassnames rules html'
-      case unHelpful $ output opts of
-        Nothing -> putStrLn result
-        Just path -> do
-          writeFile path result
-          putStrLn $ "output written to " ++ path
+  let writer = maybe putStrLn writeFile $ unHelpful $ output opts
+  -- CSS:
+  parsedCss <- parseOnly parseRules . pack <$> readFile stylesheet'
+  rules <- either error pure parsedCss
+
+  -- HTML
+  converted <- md2html . Markdown <$> readFile (unHelpful $ input opts)
+  Html html <- either (error . show) pure converted
+
+  -- Combine
+  let result = replaceClassnames rules html
+  writer result
