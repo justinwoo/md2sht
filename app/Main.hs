@@ -6,6 +6,7 @@
 module Main where
 
 import Data.Attoparsec.Text
+import Data.Function ((&))
 import Data.Maybe
 import Data.Text
 import MD2SHT
@@ -13,6 +14,7 @@ import MD2SHT.CSSParser
 import Options.Generic
 import Text.Pandoc hiding (def)
 import Text.Pandoc.Error
+import qualified Data.Set as Set
 import qualified Text.Pandoc.Options as PO
 
 data MD2SHT = MD2SHT
@@ -38,6 +40,7 @@ md2html (Markdown md) =
     }
   readOpts = PO.def
     { readerExtensions = githubMarkdownExtensions
+        & Set.delete PO.Ext_hard_line_breaks
     }
 
 
