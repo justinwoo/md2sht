@@ -31,6 +31,7 @@ executable md2sht
   build-depends:       base
                      , md2sht
                      , attoparsec
+                     , containers
                      , pandoc >= 1.3
                      , text
                      , tagsoup

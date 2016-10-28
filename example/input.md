@@ -31,3 +31,6 @@ data _≅′_ {k : Set} (a : k) {k′ : Set} (b : k′) : Set₁ where
            → (c : k′ → Set) → (c (keq (λ t → t) a) → c b)
            → a ≅′ b
 ```
+
+Testing the hard new lines. You know, some people like to press enter to align
+their text. And line breaks might be in weird places.
